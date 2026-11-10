@@ -21,6 +21,10 @@ const elapsedText = document.getElementById('elapsed'); // 경과 시간 표시 
 let timerId = null; // 1초마다 경과 시간을 갱신하는 타이머 번호 (3단계)
 const memoInput = document.getElementById('memo-input');   // 메모 입력칸 (4단계)
 const memoStatus = document.getElementById('memo-status'); // "자동 저장됨" 표시 자리 (4단계)
+const feeText = document.getElementById('fee');              // 예상 요금 표시 자리 (5단계)
+const feeRule = document.getElementById('fee-rule');         // 요금표 요약 표시 자리 (5단계)
+const rateInputs = document.querySelectorAll('.rate-input'); // 요금 입력칸들 (5단계)
+const RATE_KEY = 'parking-rate'; // 요금표 저장 이름표 (출차해도 지우지 않음)
 
 // ============================================
 // 3. 저장소(localStorage) 다루는 함수들
@@ -180,6 +184,7 @@ function startTimer(savedAt) {
   stopTimer(); // 이미 돌고 있는 타이머가 있으면 먼저 멈춤 (중복 방지)
   const update = () => {
     elapsedText.textContent = formatElapsed(Date.now() - savedAt);
+        updateFee(Date.now() - savedAt); // 요금도 같이 갱신 (5단계)
   };
   update();                            // 1초 기다리지 않고 바로 한 번 표시
   timerId = setInterval(update, 1000); // 그다음부터 1초(1000ms)마다 갱신
@@ -204,3 +209,91 @@ memoInput.addEventListener('input', () => {
   saveSpot(spot);
   memoStatus.textContent = '✅ 자동 저장됨';
 });
+
+// ============================================
+// 9. 예상 주차 요금 (5단계)
+// ============================================
+// 저장된 요금표 꺼내기 (없으면 null)
+function loadRate() {
+  try {
+    return JSON.parse(localStorage.getItem(RATE_KEY));
+  } catch (e) {
+    return null;
+  }
+}
+
+// 입력칸들 → 요금표 객체 { freeMin: 0, baseMin: 30, ... }
+function readRateFromForm() {
+  const rate = {};
+  rateInputs.forEach((input) => {
+    rate[input.dataset.key] = Math.max(0, Number(input.value) || 0); // 빈칸·음수는 0
+  });
+  return rate;
+}
+
+// 요금표 객체 → 입력칸들 (앱을 열 때 저장된 값 채우기)
+function fillRateForm(rate) {
+  rateInputs.forEach((input) => {
+    input.value = rate[input.dataset.key] || '';
+  });
+}
+
+// N분 주차했을 때 요금 (하루 최대 요금 적용 전)
+function feeForMinutes(min, rate) {
+  if (min <= 0) return 0;
+  let fee = rate.baseFee;                         // 기본 요금
+  if (min > rate.baseMin && rate.unitMin > 0) {   // 기본 시간을 넘으면
+    const units = Math.ceil((min - rate.baseMin) / rate.unitMin); // 추가 단위 수 (올림)
+    fee += units * rate.unitFee;
+  }
+  return fee;
+}
+
+// 경과 시간(밀리초) → 예상 요금
+function calcFee(ms, rate) {
+  const minutes = Math.max(0, Math.ceil(ms / 60000));  // 1초라도 지나면 1분으로 (올림)
+  const charged = Math.max(0, minutes - rate.freeMin); // 무료 시간 빼기
+  if (rate.maxFee > 0) {
+    // 하루 최대 요금: 24시간(1440분)마다 최대 금액까지만 받기
+    const days = Math.floor(charged / 1440);
+    const rest = charged % 1440;
+    const dayFee = Math.min(feeForMinutes(1440, rate), rate.maxFee);
+    return days * dayFee + Math.min(feeForMinutes(rest, rate), rate.maxFee);
+  }
+  return feeForMinutes(charged, rate);
+}
+
+// 요금표를 한 줄 설명으로 (예: "처음 30분 1,000원 · 이후 10분당 500원")
+function describeRate(rate) {
+  const won = (n) => n.toLocaleString('ko-KR') + '원';
+  const parts = [];
+  if (rate.freeMin > 0) parts.push(`무료 ${rate.freeMin}분`);
+  if (rate.baseMin > 0 || rate.baseFee > 0) parts.push(`처음 ${rate.baseMin}분 ${won(rate.baseFee)}`);
+  if (rate.unitMin > 0) parts.push(`이후 ${rate.unitMin}분당 ${won(rate.unitFee)}`);
+  if (rate.maxFee > 0) parts.push(`하루 최대 ${won(rate.maxFee)}`);
+  return parts.join(' · ');
+}
+
+// 화면의 요금 표시 갱신 (시계가 1초마다 불러줌)
+function updateFee(ms) {
+  const rate = loadRate();
+  if (!rate || (rate.baseFee === 0 && rate.unitFee === 0)) {
+    feeText.textContent = '- 원';
+    feeRule.textContent = '아래 "요금 설정"에 주차장 요금표를 입력해 주세요';
+    return;
+  }
+  feeText.textContent = calcFee(ms, rate).toLocaleString('ko-KR') + '원';
+  feeRule.textContent = describeRate(rate);
+}
+
+// 요금 입력칸에 숫자를 칠 때마다 저장하고 바로 다시 계산
+rateInputs.forEach((input) => {
+  input.addEventListener('input', () => {
+    localStorage.setItem(RATE_KEY, JSON.stringify(readRateFromForm()));
+    const spot = loadSpot();
+    if (spot) updateFee(Date.now() - spot.savedAt);
+  });
+});
+
+// 앱을 열 때 저장된 요금표를 입력칸에 채워 넣기
+fillRateForm(loadRate() || {});

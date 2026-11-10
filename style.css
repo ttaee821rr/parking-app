@@ -153,3 +153,69 @@ button:disabled {
   color: #16a34a;
   text-align: right;
 }
+
+/* ===== 5단계: 예상 주차 요금 ===== */
+#fee-box {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.fee-label {
+  margin: 0 0 4px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+#fee {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #b45309;
+  font-variant-numeric: tabular-nums;
+}
+
+#fee-rule {
+  margin: 4px 0 0;
+  color: #777;
+  font-size: 0.8rem;
+}
+
+#rate-form {
+  margin-top: 12px;
+  text-align: left;
+}
+
+#rate-form summary {
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+#rate-form label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+.rate-input {
+  width: 80px;
+  padding: 8px;
+  font-size: 1rem; /* 16px 이상: 아이폰 입력 시 확대 방지 */
+  font-family: inherit;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  text-align: right;
+}
+
+.rate-hint {
+  margin: 10px 0 0;
+  color: #777;
+  font-size: 0.8rem;
+}

@@ -31,6 +31,30 @@
         <p class="timer-label">⏱️ 주차한 지</p>
         <p id="elapsed">00:00:00</p>
       </div>
+            <!-- 예상 주차 요금 (5단계) -->
+      <div id="fee-box">
+        <p class="fee-label">💰 예상 요금</p>
+        <p id="fee">- 원</p>
+        <p id="fee-rule"></p>
+        <details id="rate-form">
+          <summary>요금 설정</summary>
+          <label>무료 시간
+            <input class="rate-input" data-key="freeMin" type="number" min="0" inputmode="numeric" placeholder="0"> 분
+          </label>
+          <label>처음
+            <input class="rate-input" data-key="baseMin" type="number" min="0" inputmode="numeric" placeholder="30"> 분까지
+            <input class="rate-input" data-key="baseFee" type="number" min="0" inputmode="numeric" placeholder="1000"> 원
+          </label>
+          <label>이후
+            <input class="rate-input" data-key="unitMin" type="number" min="0" inputmode="numeric" placeholder="10"> 분마다
+            <input class="rate-input" data-key="unitFee" type="number" min="0" inputmode="numeric" placeholder="500"> 원
+          </label>
+          <label>하루 최대
+            <input class="rate-input" data-key="maxFee" type="number" min="0" inputmode="numeric" placeholder="없음"> 원
+          </label>
+          <p class="rate-hint">주차장 입구나 정산기의 요금표를 보고 입력하세요. 입력하면 자동 저장돼요.</p>
+        </details>
+      </div>
             <!-- 주차장 메모 (4단계) -->
       <div id="memo-box">
         <label for="memo-input" class="memo-label">📝 주차 메모</label>
