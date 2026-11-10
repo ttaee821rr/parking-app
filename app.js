@@ -19,6 +19,8 @@ let map = null;    // 지도 (처음 한 번만 만들고 계속 재사용)
 let marker = null; // 지도 위의 "내 차" 핀
 const elapsedText = document.getElementById('elapsed'); // 경과 시간 표시 자리 (3단계)
 let timerId = null; // 1초마다 경과 시간을 갱신하는 타이머 번호 (3단계)
+const memoInput = document.getElementById('memo-input');   // 메모 입력칸 (4단계)
+const memoStatus = document.getElementById('memo-status'); // "자동 저장됨" 표시 자리 (4단계)
 
 // ============================================
 // 3. 저장소(localStorage) 다루는 함수들
@@ -64,6 +66,8 @@ function render() {
     infoText.textContent = `주차 시작: ${time} · 위치 오차 약 ${Math.round(spot.accuracy)}m`;
 
   startTimer(spot.savedAt); // 경과 시간 표시 시작 (3단계)
+    memoInput.value = spot.memo || ''; // 저장된 메모 보여주기, 없으면 빈칸 (4단계)
+  memoStatus.textContent = '';
 
   // 카카오맵 길찾기 링크 (API 키 없이 쓸 수 있는 공개 링크 형식)
   // 형식: https://map.kakao.com/link/to/이름,위도,경도
@@ -188,3 +192,15 @@ function stopTimer() {
     timerId = null;
   }
 }
+
+// ============================================
+// 8. 주차장 메모 (4단계)
+// ============================================
+// 글자를 입력할 때마다 자동으로 저장
+memoInput.addEventListener('input', () => {
+  const spot = loadSpot();
+  if (!spot) return;           // 저장된 주차 위치가 없으면 아무것도 안 함
+  spot.memo = memoInput.value; // 기존 주차 정보에 메모만 추가/수정
+  saveSpot(spot);
+  memoStatus.textContent = '✅ 자동 저장됨';
+});

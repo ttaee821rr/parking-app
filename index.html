@@ -31,6 +31,13 @@
         <p class="timer-label">⏱️ 주차한 지</p>
         <p id="elapsed">00:00:00</p>
       </div>
+            <!-- 주차장 메모 (4단계) -->
+      <div id="memo-box">
+        <label for="memo-input" class="memo-label">📝 주차 메모</label>
+        <textarea id="memo-input" rows="2" maxlength="100"
+          placeholder="예: B2층 C-14 기둥 옆, 엘리베이터 근처"></textarea>
+        <p id="memo-status"></p>
+      </div>
       <div id="map"></div>
       <p id="info"></p>
       <a id="route-btn" class="primary" target="_blank" rel="noopener">🧭 카카오맵으로 길찾기</a>
