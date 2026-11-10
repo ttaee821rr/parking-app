@@ -1,0 +1,117 @@
+/* 모든 요소의 크기 계산을 직관적으로 (테두리·여백 포함) */
+* {
+  box-sizing: border-box;
+}
+
+/* hidden 속성이 붙은 요소는 무조건 숨기기 */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  background: #f4f5f7;
+  color: #222;
+}
+
+header {
+  background: #1e3a8a;
+  color: white;
+  padding: 16px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+/* 휴대폰 화면 기준으로 가운데 정렬 */
+main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* 화면 A, B 안의 요소들을 세로로 쌓고 간격 주기 */
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guide {
+  text-align: center;
+  color: #555;
+}
+
+/* 지도 영역 크기 (높이를 꼭 정해줘야 지도가 보임) */
+#map {
+  height: 300px;
+  border-radius: 12px;
+}
+
+/* 버튼: 운전자가 한 손으로 누르기 쉽게 크게 */
+.primary,
+.secondary {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  border: none;
+  border-radius: 12px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.secondary {
+  background: #e5e7eb;
+  color: #333;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+#info {
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+#status {
+  text-align: center;
+  min-height: 1.5em;
+}
+/* ===== 3단계: 주차 경과 시간 ===== */
+#timer-box {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.timer-label {
+  margin: 0 0 4px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+#elapsed {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  font-variant-numeric: tabular-nums; /* 숫자 폭을 똑같이 → 초가 바뀌어도 글자가 흔들리지 않음 */
+}

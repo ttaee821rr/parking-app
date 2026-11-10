@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 차 어디?</title>
+
+  <!-- 지도 라이브러리(Leaflet)의 디자인 파일 + SRI 지문 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" />
+  <!-- 우리가 만든 디자인 파일 -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🚗 내 차 어디?</h1>
+  </header>
+
+  <main>
+    <!-- [화면 A] 아직 저장된 위치가 없을 때 -->
+    <section id="empty-view">
+      <p class="guide">주차하고 나서 아래 버튼을 눌러 주세요.</p>
+      <button id="save-btn" class="primary">📍 지금 위치를 주차 위치로 저장</button>
+    </section>
+
+    <!-- [화면 B] 저장된 위치가 있을 때 (처음엔 숨겨둠) -->
+    <section id="saved-view" hidden>
+            <!-- 주차 경과 시간 (3단계) -->
+      <div id="timer-box">
+        <p class="timer-label">⏱️ 주차한 지</p>
+        <p id="elapsed">00:00:00</p>
+      </div>
+      <div id="map"></div>
+      <p id="info"></p>
+      <a id="route-btn" class="primary" target="_blank" rel="noopener">🧭 카카오맵으로 길찾기</a>
+      <button id="clear-btn" class="secondary">🗑️ 출차 완료 (기록 지우기)</button>
+    </section>
+
+    <!-- 안내/오류 메시지가 나오는 자리 -->
+    <p id="status"></p>
+  </main>
+
+  <!-- 지도 라이브러리(Leaflet)의 기능 파일 + SRI 지문 -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+  <!-- 우리가 만든 기능 파일 (반드시 Leaflet 다음에 불러와야 함) -->
+  <script src="app.js"></script>
+</body>
+</html>
